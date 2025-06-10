@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
+    console.log('Messages:', messages);
 
     const systemPrompt = `You are an expert Manim developer who creates engaging, educational mathematical animations. 
     
@@ -42,6 +43,7 @@ EDUCATIONAL VALUE:
 - Make complex concepts accessible through animation
 
 EXAMPLE STRUCTURE:
+
 from manim import *
 
 class ConceptScene(Scene):

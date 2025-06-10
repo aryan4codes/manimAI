@@ -17,8 +17,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid Manim code: missing required imports' }, { status: 400 });
     }
 
-    if (!manimCode.includes('class ConceptScene(Scene)')) {
-      return NextResponse.json({ error: 'Invalid Manim code: missing ConceptScene class' }, { status: 400 });
+    // Use regex to check for any class inheriting from Scene
+    const sceneClassRegex = /class\s+\w+\s*\(\s*Scene\s*\)\s*:/;
+    if (!sceneClassRegex.test(manimCode)) {
+      return NextResponse.json({ error: 'Invalid Manim code: missing a class that inherits from Scene' }, { status: 400 });
     }
 
     if (!manimCode.includes('def construct(self)')) {

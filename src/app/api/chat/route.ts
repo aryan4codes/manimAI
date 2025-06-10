@@ -50,56 +50,8 @@ Be proactive and decisive - create videos immediately when requested.`,
               throw new Error('Failed to generate Manim script');
             }
 
-            // Extract the script from the streaming response
-            const reader = scriptResponse.body?.getReader();
-            if (!reader) {
-              throw new Error('Failed to read script response');
-            }
-
-            let scriptContent = '';
-            const decoder = new TextDecoder();
-            
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              
-              const chunk = decoder.decode(value, { stream: true });
-              const lines = chunk.split('\n');
-              
-              for (const line of lines) {
-                if (line.startsWith('0:')) {
-                  try {
-                    const jsonData = JSON.parse(line.substring(2));
-                    if (jsonData.content) {
-                      scriptContent += jsonData.content;
-                    }
-                  } catch {
-                    // Skip invalid JSON lines
-                  }
-                }
-              }
-            }
-            
-            scriptContent = scriptContent.trim();
-            console.log('Script content:', scriptContent);
-            
-            // Clean up markdown formatting
-            scriptContent = scriptContent
-              .replace(/```python\n?/g, '')
-              .replace(/```\n?/g, '')
-              .replace(/^\s*```.*$/gm, '')
-              .trim();
-            
-            // Ensure it starts with the import
-            if (!scriptContent.startsWith('from manim import *')) {
-              const importMatch = scriptContent.match(/from manim import \*/);
-              if (importMatch) {
-                const importIndex = scriptContent.indexOf('from manim import *');
-                scriptContent = scriptContent.substring(importIndex);
-              }
-            }
-            
-            console.log('Cleaned script content:', scriptContent);
+            const { code: scriptContent } = await scriptResponse.json();
+            console.log('Generated script content:', scriptContent);
             
             // Validate the script has required elements
             if (!scriptContent.includes('from manim import *')) {
