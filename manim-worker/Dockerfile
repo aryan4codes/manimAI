@@ -6,11 +6,18 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y \
     build-essential \
     ffmpeg \
-    texlive-full \
-    pango-view \
-    cairo \
+    libpango1.0-dev \
+    libcairo2-dev \
     pkg-config \
-    py3cairo \
+    python3-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install LaTeX packages separately (optional - remove if not needed)
+RUN apt-get update && apt-get install -y \
+    texlive-latex-base \
+    texlive-fonts-recommended \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

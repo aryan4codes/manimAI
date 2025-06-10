@@ -2,3 +2,4 @@ manim
 flask
 python-dotenv
 vercel-blob
+pycairo
